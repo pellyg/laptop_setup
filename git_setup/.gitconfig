@@ -6,7 +6,7 @@
 	name = Greg Pelly
 	email = pellyg@slack-corp.com
 [core]
-	excludesfile = /Users/gregpelly/.gitignore_global
+	excludesfile = /Users/pellyg/.gitignore_global
 	pager = diff-so-fancy | less --tabs=4 -RFX
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"

@@ -1,0 +1,110 @@
+
+alias touchall='git diff origin/master --name-only | xargs touch'
+
+alias conf='open https://jenkins.tinyspeck.com/job/webapp-unit-peridot/configure'
+export WEBAPP_PATH="/Users/pellyg/webapp"
+export MY_TEAM='kermit' 
+alias inspector='defaults write com.tinyspeck.slackmacgap DefaultsDeveloperToolsEnabled -bool YES'
+dev () {
+  cd $WEBAPP_PATH;
+  if [ "$1" ]; then
+    if [[ "$1" == 'api' ]]; then
+      echo "https://api.`slack checkpoint -e`.slack.com/methods"
+      open "https://api.`slack checkpoint -e`.slack.com/methods"
+    else
+      echo "https://`slack checkpoint -e| sed "s/dev/$MY_TEAM.dev/"`.slack.com/$1"
+      open "https://`slack checkpoint -e| sed "s/dev/$MY_TEAM.dev/"`.slack.com/$1"
+    fi
+  else
+    echo "https://`slack checkpoint -e| sed "s/dev/$MY_TEAM.dev/"`.slack.com/account/settings"
+    open "https://`slack checkpoint -e| sed "s/dev/$MY_TEAM.dev/"`.slack.com/account/settings"
+  fi
+} 
+
+#alias dev='cd $WEBAPP_PATH; open https://`slack checkpoint -e| sed "s/dev/$MY_TEAM.dev/"`.slack.com/account/settings'
+alias attach='open https://checkpoint.tinyspeck.com/webapp/branch-`git rev-parse --abbrev-ref HEAD`?env=random\&attach=1'
+alias checkpoint='open https://checkpoint.tinyspeck.com/webapp/branch-`git rev-parse --abbrev-ref HEAD`'
+alias db='ssh slack-db-dev16'
+alias sdb="ssh -t slack-db-dev16 'mysql -ugod slack_shard_1; bash -l'"
+alias dw="ssh -t dw-presto 'presto-cli --catalog hive'"
+alias ch=checkpoint
+alias chs='open https://checkpoint.tinyspeck.com/webapp/branch-`git rev-parse --abbrev-ref HEAD`?sync=1'
+alias sync='slack sync-dev'
+alias test='open `slack checkpoint --pr`?retest=unit'
+alias deploy='open https://tinyspeck.slack.com/messages/@slackbot/deploy/'
+alias attach='slack checkpoint --attach'
+alias github='open https://slack-github.com/slack/webapp'
+
+#export SLACK_WEBHOOK_URL="https://$MY_TEAM.dev.slack.com/services/hooks/incoming-webhook?token=TOKEN"
+export SLACK_WEBHOOK_URL="https://hooks.dev.slack.com/services/T05003MN0/B060MN5DX/xgjY2PU4DMXHozvaeSwitELc"
+export SLACK_SYNC_DEV_AUTO_ATTACH=1
+alias gp="git push"
+alias amend="git commit --amend"
+alias gen='cd ~/webapp; ./tests/generators/php'
+
+stashgrep() {
+  IFS=$'\n'
+  for i in `git stash list --format="%gd"`; do
+    git stash show -p $i | grep -H --label="$i" "$1"
+  done
+}
+
+function pr_for_sha {
+    git log --merges --ancestry-path --oneline $1..master | grep 'pull request' | tail -n1 \
+        | awk '{print $5}' | cut -c2- | xargs -I % open https://slack-github.com/slack-robots/${PWD##*/}/pull/%
+}
+
+function apply-armor {
+    if (( $# == 0 )); then
+        exit
+    fi
+
+    printf '%q' "$1"
+    shift
+
+    if (( $# > 0 )); then
+        printf ' %q' "$@"
+    fi
+}
+
+q () { 
+  echo args=$*
+  if [[ $@ != '' ]] ; then
+    cmd1="$(apply-armor mysql -ugod slack_shard_1 -e "$*")"
+    echo $cmd1    
+    ssh -t slack-db-dev16 "${cmd1}"
+  else
+    echo "no args"
+    ssh -t slack-db-dev16 'mysql -ugod slack_shard_1; bash -l'
+  fi
+}
+
+loop () {
+  while true; do 
+    q $@
+    sleep 5
+  done
+}
+
+function prodb {
+
+    if [ "$1" == 'mains' ]; then 
+        ssh -t slack-db35 'mycli -ugod -D slack_main; bash -l';
+        return
+    fi
+
+    # locate `slack_shard_<#>`
+
+    shard_host=slack-shard$1$2.ec2.tinyspeck.com
+    shard_db=$(ssh -t "$shard_host" 'mysql -ugod -Ne "SHOW databases";' | grep -Eo --color=never "slack_shard_[0-9]+")
+
+    ssh -t "$shard_host" 'mycli -ugod -D '$shard_db'; bash -l';
+}
+
+
+## some checkpoint development  aliases
+alias poke='rsync -e ssh --progress --no-perms --omit-dir-times -Crltvxz --exclude .git --exclude='\''.*.swp'\'' --exclude go-pear.phar ~/hacking/checkpoint/ checkpoint-app-dev1.ec2.tinyspeck.com:/var/www/html/checkpoint-dev3/'
+
+alias sync-checkpoint='poke; fswatch -o . | while read f; do poke; done'
+
+
