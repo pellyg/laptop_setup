@@ -1,4 +1,4 @@
 #!/bin/bash
 
 brew install cask
-brew cask install sublime-text divvy recordit 1password
+brew cask install google-chrome sublime-text divvy recordit 1password dropbox

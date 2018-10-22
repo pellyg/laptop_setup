@@ -1,10 +1,7 @@
 
 alias touchall='git diff origin/master --name-only | xargs touch'
 
-alias conf='open https://jenkins.tinyspeck.com/job/webapp-unit-peridot/configure'
-export WEBAPP_PATH="/Users/pellyg/webapp"
-export MY_TEAM='kermit' 
-alias inspector='defaults write com.tinyspeck.slackmacgap DefaultsDeveloperToolsEnabled -bool YES'
+DefaultsDeveloperToolsEnabled -bool YES'
 dev () {
   cd $WEBAPP_PATH;
   if [ "$1" ]; then
