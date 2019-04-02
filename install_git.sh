@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp git_setup/.* ~/
+cp -r git_setup/.* ~/
