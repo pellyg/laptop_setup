@@ -2,3 +2,5 @@
 
 brew install cask
 brew cask install sublime-text divvy recordit 1password
+
+brew install diff-so-fancy
