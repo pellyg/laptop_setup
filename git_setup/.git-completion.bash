@@ -2741,11 +2741,3 @@ _gitk ()
 
 __git_complete git __git_main
 __git_complete gitk __gitk_main
-
-# The following are necessary only for Cygwin, and only are needed
-# when the user has tab-completed the executable name and consequently
-# included the '.exe' suffix.
-#
-if [ Cygwin = "$(uname -o 2>/dev/null)" ]; then
-__git_complete git.exe __git_main
-fi
