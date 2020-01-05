@@ -3,5 +3,3 @@
 brew install cask
 
 brew cask install google-chrome sublime-text divvy recordit 1password dropbox
-
-brew install diff-so-fancy

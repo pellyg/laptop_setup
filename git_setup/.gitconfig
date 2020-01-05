@@ -4,7 +4,7 @@
 	required = true
 [user]
 	name = Greg Pelly
-	email = pellyg@slack-corp.com
+	email = pintadel@gmail.com
 [core]
 	excludesfile = /Users/pellyg/.gitignore_global
 	pager = diff-so-fancy | less --tabs=4 -RFX
