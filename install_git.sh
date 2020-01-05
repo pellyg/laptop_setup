@@ -4,6 +4,12 @@ rm -rf ~/git_setup
 
 cp -r ./git_setup ~/
 
+# set up x-code (requires manual confirmation in order to proceed)
+echo "installing xcode"
+xcode-select --install
+
+
+
 ln -sf  ~/git_setup/.gitignore ~/.gitignore
 ln -sf  ~/git_setup/.gitconfig ~/.gitconfig
 
