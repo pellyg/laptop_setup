@@ -1,8 +1,8 @@
 #!/bin/bash
 
-rm -rf ~/git_setup
 
-cp -r ./git_setup ~/
+rm -rf ~/git_setup
+cp -r git_setup/.* ~/
 
 # set up x-code (requires manual confirmation in order to proceed)
 echo "installing xcode"
