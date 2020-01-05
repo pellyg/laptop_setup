@@ -13,8 +13,11 @@ echo Setting up diff-so-fancy for git
 source ./diff_so_fancy.sh
 
 
-cp git_setup/.gitignore ~/
+cp git_setup/.gitignore_global ~/gitignore
 cp git_setup/.gitconfig ~/
+
+git config --global core.excludesfile '~/.gitignore'
+
 
 WORKING_DIR=`pwd`
 
